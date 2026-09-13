@@ -99,16 +99,16 @@
   .tagline em{font-style:italic;color:var(--blue)}
 
   /* ---------- scroll hint ---------- */
-  .scroll-hint{position:absolute;left:clamp(20px,6vw,96px);bottom:clamp(18px,3.5vh,34px);
-    display:flex;align-items:center;gap:14px;
-    font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;
-    color:var(--dim);transition:color .25s}
-  .scroll-hint:hover{color:var(--ink)}
-  .sh-line{position:relative;width:1px;height:44px;background:var(--line);overflow:hidden}
+  .scroll-hint{position:absolute;left:0;right:0;bottom:clamp(14px,3vh,30px);
+    display:flex;justify-content:center;pointer-events:none;
+    transition:opacity .55s var(--e)}
+  .scroll-hint.gone{opacity:0}
+  .sh-line{position:relative;width:1px;height:40px;background:var(--line);overflow:hidden;
+    pointer-events:auto;cursor:pointer}
   .sh-line::after{content:"";position:absolute;left:0;top:-45%;width:100%;height:45%;
-    background:var(--ink);animation:shline 1.9s cubic-bezier(.65,0,.35,1) infinite}
+    background:var(--ink);animation:shline 2s cubic-bezier(.65,0,.35,1) infinite}
   @keyframes shline{to{top:115%}}
-  .scroll-hint:hover .sh-line::after{background:var(--blue)}
+  .sh-line:hover::after{background:var(--blue)}
 
   /* ---------- sections ---------- */
   section{scroll-margin-top:24px}
@@ -322,10 +322,7 @@
       </p>
     </div>
 
-    <a class="scroll-hint rv" style="--d:1.15s" href="#about" data-cursor="SCROLL" aria-label="Scroll down to about">
-      <span class="sh-line" aria-hidden="true"></span>
-      <span>Scroll</span>
-    </a>
+    <a class="scroll-hint rv" style="--d:1.15s" href="#about" aria-label="Scroll down to about"><span class="sh-line" aria-hidden="true"></span></a>
   </section>
 
   <section id="about" class="sec">
@@ -487,6 +484,10 @@
   if(!FINE) html.classList.add("touch");
   const damp=(c,t,s,dt)=>c+(t-c)*(1-Math.exp(-s*dt));
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  /* ---------- scroll hint fades away after first scroll ---------- */
+  const hintEl=document.querySelector(".scroll-hint");
+  if(hintEl) addEventListener("scroll",()=>{if(scrollY>48)hintEl.classList.add("gone");},{passive:true});
 
   /* ---------- email → clipboard (works under reduced motion too) ---------- */
   const mail=$("#mail");
